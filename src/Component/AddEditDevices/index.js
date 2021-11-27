@@ -1,4 +1,4 @@
-import { Button, OutlinedInput, Select, InputLabel, Paper, MenuItem } from "@mui/material";
+import { Button, OutlinedInput, Select, InputLabel, Paper, MenuItem, FormHelperText } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -39,18 +39,17 @@ const useStyles = makeStyles(theme => ({
     margin: "0px 15px"
   },
   input_txt: {
-    width: "100%",
-    "input::-webkit-outer-spin-button, input::-webkit-inner-spin-button": {
-      "-webkit-appearance": "none",
-      margin: "0"
-    }
+    width: "100%"
+  },
+  helper_txt: {
+    color: "red"
   }
 }));
 
 const formValidationSchema = Yup.object().shape({
   type: Yup.string().required(),
-  system_name: Yup.string().required(),
-  hdd_capacity: Yup.number().required()
+  system_name: Yup.string().required("System Name is required"),
+  hdd_capacity: Yup.number("HDD Capacity must be a number").required("HDD Capacity must be required")
 });
 
 const initialDevice = {
@@ -63,7 +62,7 @@ const AddEditDevices = ({ modal, isEdit, device, onCloseModal, onSubmitForm }) =
 
   const classes = useStyles();
 
-  const { values, handleBlur, handleSubmit, handleChange } = useFormik({
+  const { values, errors, touched, handleBlur, handleSubmit, handleChange } = useFormik({
     enableReinitialize: true,
     initialValues: device || initialDevice,
     validationSchema: formValidationSchema,
@@ -88,19 +87,21 @@ const AddEditDevices = ({ modal, isEdit, device, onCloseModal, onSubmitForm }) =
           </FormControl>
           <FormControl>
             <InputLabel htmlFor="system_name">System Name</InputLabel>
-            <OutlinedInput className={classes.input_txt} value={values.system_name} name="system_name" onChange={handleChange} onBlur={handleBlur} id="system_name" />
+            <OutlinedInput className={classes.input_txt} value={values.system_name} name="system_name" onChange={handleChange} onBlur={handleBlur} aria-describedby="system_name_helper" id="system_name" />
+            {errors.system_name && touched.system_name && <FormHelperText className={classes.helper_txt} id="system_name_helper">{errors.system_name}</FormHelperText>}
           </FormControl>
           <FormControl>
             <InputLabel htmlFor="hdd_capacity">HDD Capacity</InputLabel>
-            <OutlinedInput type="number" className={classes.input_txt} value={values.hdd_capacity} name="hdd_capacity" onChange={handleChange} onBlur={handleBlur} endAdornment={<div>GB</div>} id="hdd_capacity" />
+            <OutlinedInput type="number" className={classes.input_txt} value={values.hdd_capacity} name="hdd_capacity" onChange={handleChange} aria-describedby="hdd_capacity_helper" onBlur={handleBlur} endAdornment={<div>GB</div>} id="hdd_capacity" />
+            {errors.hdd_capacity && touched.hdd_capacity && <FormHelperText className={classes.helper_txt} id="hdd_capacity_helper">{errors.hdd_capacity}</FormHelperText>}
           </FormControl>
         </div>
         <div className={classes.modal_footer}>
           <Button className={classes.button} variant="outlined" onClick={onCloseModal}>Cancel</Button>
           <Button className={classes.button} variant="contained" onClick={handleSubmit}>Submit</Button>
         </div>
-      </Paper>
-    </StyledModel>
+      </Paper >
+    </StyledModel >
   )
 }
 
