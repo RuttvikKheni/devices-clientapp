@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Button, Container } from '@mui/material';
-import { styled } from '@mui/system';
+import { Container } from '@mui/material';
+import './App.css';
 
 import useDevices from '../Hooks/useDevices';
 import DataTable from './Table';
