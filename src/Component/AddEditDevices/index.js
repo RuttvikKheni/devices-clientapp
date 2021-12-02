@@ -1,9 +1,9 @@
-import { Button, OutlinedInput, Select, InputLabel, Paper, MenuItem, FormHelperText, Backdrop } from "@mui/material";
+import { Button, OutlinedInput, Select, InputLabel, Paper, MenuItem, FormHelperText } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { StyledModel, FormControl } from "./styled";
-
+import { DeviceTypes } from "./../../Constants/";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -79,8 +79,8 @@ const useStyles = makeStyles(theme => ({
 
 const formValidationSchema = Yup.object().shape({
   type: Yup.string().required().notOneOf(["Select Type"], "Please select Device type"),
-  system_name: Yup.string().required("System Name is required"),
-  hdd_capacity: Yup.number("HDD Capacity must be a number").required("HDD Capacity must be required")
+  system_name: Yup.string().trim().matches(/^(?!\s+$)/, 'This System Name cannot contain only blankspaces').required("System Name is required"),
+  hdd_capacity: Yup.number("HDD Capacity must be a number").positive("HDD Capacity must be a positive number").required("HDD Capacity must be required")
 });
 
 const initialDevice = {
@@ -89,7 +89,7 @@ const initialDevice = {
   hdd_capacity: ""
 }
 
-const AddEditDevices = ({ modal, isEdit, device, onCloseModal, onSubmitForm }) => {
+const AddEditDevices = ({ modal, isEdit, device, setEditDeviceInfo, onSubmitForm }) => {
 
   const classes = useStyles();
 
@@ -100,9 +100,12 @@ const AddEditDevices = ({ modal, isEdit, device, onCloseModal, onSubmitForm }) =
     onSubmit: onSubmitForm
   })
 
+  const onCloseModal = () => {
+    setEditDeviceInfo({ modal: false, isEdit: false, device: {} });
+  }
 
   return (
-    <StyledModel aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description" open={modal} onClose={onCloseModal} Backdrop={Backdrop}>
+    <StyledModel aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description" open={modal} onClose={onCloseModal}>
       <Paper className={classes.paper}>
         <div className={classes.modal_title}>{!isEdit ? "Add Device" : "Edit Device"}</div>
         <div className={classes.container}>
@@ -111,9 +114,7 @@ const AddEditDevices = ({ modal, isEdit, device, onCloseModal, onSubmitForm }) =
               <InputLabel className={classes.text_Label} htmlFor="device_type">Device Type</InputLabel>
               <Select placeholder="Select Type" value={values.type} onChange={handleChange} onBlur={handleBlur} name="type" className={classes.input_txt} id="device_type">
                 <MenuItem hidden value={"Select Type"}>Select Type</MenuItem>
-                <MenuItem value={"WINDOWS_WORKSTATION"}>Windows Workstation</MenuItem>
-                <MenuItem value={"WINDOWS_SERVER"}>Windows Server</MenuItem>
-                <MenuItem value={"MAC"}>Mac</MenuItem>
+                {DeviceTypes.map(({ type, value }, i) => value !== "ALL" ? <MenuItem key={i} value={value}>{type}</MenuItem> : "")}
               </Select>
             </div>
             {errors.type && touched.type && <FormHelperText className={classes.helper_txt} id="system_name_helper">{errors.type}</FormHelperText>}

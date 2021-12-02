@@ -42,3 +42,13 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.app{
+  position: relative;
+}
+
+.alert_message{
+  position: absolute;
+  width: 100%;
+  z-index: 1000000;
+}

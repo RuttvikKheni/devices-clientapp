@@ -1,12 +1,12 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { AddDeviceButton, OptionsWrappers, SelectWrappers } from "./styled";
-import { DevideTypes, SortByFields } from "./../../Constants/";
+import { DeviceTypes, SortByFields } from "./../../Constants/";
 
-const FilterOptions = ({ DeviceType, SortBy, onChangeFilters, onAddClick }) => {
-  const handleChange = ({ target }) => {
-    onChangeFilters(target)
-  }
+const FilterOptions = ({ DeviceType, SortBy, onChangeFilters, setEditDeviceInfo }) => {
+
+  const handleChange = ({ target }) => onChangeFilters(target)
+  const onAddClick = () => setEditDeviceInfo({ modal: true, isEdit: false })
 
   return (
     <OptionsWrappers>
@@ -14,7 +14,7 @@ const FilterOptions = ({ DeviceType, SortBy, onChangeFilters, onAddClick }) => {
         <SelectWrappers fullWidth>
           <InputLabel id="DeviceTypeID">Device Type</InputLabel>
           <Select value={DeviceType} labelId="DeviceTypeID" label="Device Type" name="DeviceType" onChange={handleChange}>
-            {DevideTypes.map(({ id, type }) => <MenuItem key={id} value={id}>{type}</MenuItem>)}
+            {DeviceTypes.map(({ id, type }) => <MenuItem key={id} value={id}>{type}</MenuItem>)}
           </Select>
         </SelectWrappers>
         <SelectWrappers fullWidth>
